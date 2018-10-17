@@ -129,8 +129,8 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 4.	Click on Jobs on the left panel.
 5.	Close the Add a job dialog box with instructions by clicking the “X” button in the upper right of the dialog.
 6. Click Add job.
-8.	Close the Specify job properties dialog box with instructions by clicking the “X” button in the upper right of the dialog.
-9.	In Job properties page, enter the following
+7.	Close the Specify job properties dialog box with instructions by clicking the “X” button in the upper right of the dialog.
+8.	In Job properties page, enter the following
 			
 			Name: YourInitials_bigdata_analytic_csv2parquet
 			IAM role: YouInitialsGlueServiceRole
@@ -142,12 +142,12 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 			Leave everything else default
 
 
-10.	Click Next
-11.	Skip output table selection and click Next.
-12. In the script page copy the script under folder glue of this project and paste it in the editor.
-13. Click on RunJob and take a break. This Job can take about 10-15 mins to complete when Glue launches the cluster for the first time.
-14. Once the Job is complete verify that Glue has 3 output directories for your machine learning job.
-15. 
+9.	Click Next
+10.	Skip output table selection and click Next.
+11. In the script page copy the script under folder glue of this project and paste it in the editor.
+12. Click on RunJob and take a break. This Job can take about 10-15 mins to complete when Glue launches the cluster for the first time.
+13. Once the Job is complete verify that Glue has 3 output directories for your machine learning job.
+
 
 
 
