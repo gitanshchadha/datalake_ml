@@ -1,3 +1,96 @@
+
+
+##Introduction
+
+Enterprises today are exploring ways to upgrade existing applications to harvest value from **machine learning**. Business have lots of structured and unstructured data already. Machine learning is not a one time activity where you train a model and  it can live forever. There are things such as concept drift that makes the model stale. The stale model has to be minimally periodically retrained with fresh batch of data. To continue to get value out of machine learning models we need an architecture and process in place to repeatedly and consistently train new models and retrain existing models with new data.
+
+In the workshop, we will discuss how you can build an end to end pipeline for machine learning. Machine learning is more than building a cool model. It involves tasks that includes data sourcing, data ingestion, data transformation, pre-processing data for use in training, training a model and hosting the model.
+
+AWS provides several services to address specific needs of different stages of machine learning pipeline. The workshop have multiple labs that focus on different stages of machine learning pipeline. We will be demonstrating the overall flow and design of machine learning pipeline by using movie-lens dataset to build a recommendation engine for movies. 
+
+The workshop is divided into four labs.  In **Lab 1**, we will source the movie-lens dataset from external source on internet, bring it to S3 and upload it into Dynamo DB. In enterprises the equivalent data may be already  present in some RDS, NoSQL or Data-warehouse system. The data can be ingested as a one time full-load as a batch or as a real-time stream of data. 
+
+Depending on the usecase, there may be a need to do both batch and stream or just a batch or a stream. In the current workshop, we will do a one full-load of data into Dynamo DB and then replay new records into Kinesis stream using the Lamda function as a source simulator. Each lab has references to resources and instruction to help you complete the lab successfully.
+
+The labs are **sequential** and participants will have to complete them in the sequence.
+
+
+## Reference Architecture
+![Reference Architecture](./images/reference-architecture.png)
+
+## **Lab 1 - Use DMS to copy data from S3 to DyanamoDB**
+
+###Prerequisites and assumptions
+
+To complete this lab, you need an AWS account that provides access to AWS services.
+
+The resources will be created using cloud formation. The cloud formation templates are agnostic of an AWS region in which they are executed. The only pre-condition is that all the services that are required for end to end solution are available in the region that you choose to work.
+
+The cloud formation can be executed in two modes. 
+
+You can choose to run CloudFormation templates one by one manully in sequence. In total five CloudFormation templates are required to build the full DMS stack to move data from source to target. The sequence number is indicated in the suffix of CloudFormation templates yaml files. Running five CloudFormation templates i.e. <filename>-001.yaml - <filename>-005.yaml will  create the full DMS stack and will also start the DMS replication task. 
+
+The second way to create full DMS stack is to run the dms-full-stack-nested.yaml file that will automatically run the five CloudFormation templates i.e <filename>-001.yaml - <filename>-005.yaml sequentially without manual intervention.
+
+For this workshop we will go with second option. Run one nested CloudFormation template to create full DMS stack. Follow steps outlined below to create full DMS stack. The output of this step will be four dynamo Db tables populated with movie-lens data. You will see 5th table named <exceptions> with now records.
+
+###List of resoucres
+
+We will provision following resources using CloudFormation templates:
+
+1. Amazon S3 bucket to hold movielens data.
+2. IAM roles to provide access to Database Migration Service to access and provision other AWS resources
+4. VPC, Subnet, Internet Gateway and Security Group to provisio DMS Replication Instances.
+5. DMS replication instance and DMS tasks
+6. Lambda function to copy movie-lens data from external source into S3 bucket in the account.
+7. Lambda function to start DMS task replication.
+
+###Execution steps
+
+1. Sign into AWS console with Valid credentials
+2. Choose AWS regions
+3. Navigate to DMS service console. 
+![DMS Service Console](./images/dms-001.png) 
+4. Click 'Create Stack'. 
+![DMS Service Console](./images/dms-002.png) 
+5. Specify an Amazon S3 template URL and click 'Next'. 
+![DMS Service Console](./images/dms-003.png) 
+6. Specify stack name and click 'Next'. 
+![DMS Service Console](./images/dms-004.png)
+7. Click 'Next'. 
+![DMS Service Console](./images/dms-005.png)
+8. Confirm permission to create IAM resources with custom names and click 'Create'. 
+![DMS Service Console](./images/dms-006.png)
+9. Wait for Cloudformation to provision all your resources. It will take around 15 minutes for complete execution.
+
+###Validation steps
+1. Validate in CloudFormation console that DMS stack has been created successfully. 
+![DMS Service Console](./images/dms-007.png) 
+2. Click Services, search DMS and Click on Database Migration Service 
+![DMS Service Console](./images/dms-008.png) 
+3. Click 'Tasks'. 
+![DMS Service Console](./images/dms-009.png) 
+4. Validate that load is 100% complete and status is 'Load complete'. 
+![DMS Service Console](./images/dms-010.png) 
+5. Click Services, search for Dynamo and Click 'DynamoDb'. 
+![DMS Service Console](./images/dms-011.png)
+6. Click 'Tables'. 
+![DMS Service Console](./images/dms-012.png)
+7. Confirm that 5 tables has been created. 
+![DMS Service Console](./images/dms-013.png)
+8. Click on awsdms_full_load_exceptions tables has 0 items. 
+![DMS Service Console](./images/dms-014.png)
+9. Click links_t table and confirm that items are not empty. 
+![DMS Service Console](./images/dms-015.png)
+10. Click movies_t table and confirm that items are not empty. 
+![DMS Service Console](./images/dms-016.png)
+11. Click ratings_t table and confirm that items are not empty. 
+![DMS Service Console](./images/dms-017.png)
+12. Click tags_t table and confirm that items are not empty. 
+![DMS Service Console](./images/dms-018.png)
+
+Congrats!! You have successfully completed Lab 1
+
 # **Lab 2 - Stream Data with Kinesis**
 
 In this Lab, we will setup setup a Lambda function to push user rating data into Kinesis data stream and then use Amazon Kinesis Firehose to export data to S3. The Lambda function will simulate user generated real time ratings data. Amazon Kinesis makes it easy to collect, process, and analyze real-time, streaming data so you can get timely insights and react quickly to new information. By using Kinesis, we can store real time data data update our machine learning model. Kinesis supports multiple consumers for its data streams so another consumer can be setup to process data and store it into DynamoDB.
