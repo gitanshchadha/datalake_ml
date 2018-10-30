@@ -102,22 +102,28 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
    2. In the upper right hand of the console make sure you are in the desired region (eg: N Virginia)
    3. Click on kinesis from the list of services. You will arrive on the kinesis dashboard.
    4. On the Kinesis Dashboard, click **Data Stream** on the left panel and then click **Create** **Kinesis Stream**. If you do not see the panel but a welcome page, go ahead and click “**Get Started**”.
-    ![](images/kinesis.png)
-   5. For Kinesis stream name, enter YourInitials_stream. Enter 1 for Number of Shards. 	
-   6. Click on create streams. The stream will be on creating status. Wait for stream to be in **ACTIVE** status.
+    ![](images/kinesis-001.png)
+   5. For Kinesis stream name, enter YourInitials_stream. Enter 1 for Number of Shards. 	 ![](images/kinesis-002.png)
+   6. Click on create Kinesis stream. The stream will be on creating status. Wait for stream to be in **ACTIVE** status.
+    ![](images/kinesis-002.png)
 
 ## 2. Create an Amazon Kinesis Firehose stream
 
    1. Sign into the AWS management console.
    2. In the upper right hand of the console make sure you are in the desired region (eg: N Virginia)
    3. Click on kinesis from the list of services. You will arrive on the kinesis dashboard.
-   4. On the Kinesis Dashboard, click **Data Stream** on the left panel and then click **Create** **Kinesis Firehose Stream**. If you do not see the panel but a welcome page, go ahead and click “**Get Started**”.
-     ![](images/kinesis.png)
+   4. On the Kinesis Dashboard, click **Data Firehose** on the left panel and then click **Create** **Delivery Stream**. If you do not see the panel but a welcome page, go ahead and click “**Get Started**”.
+     ![](images/firehose-001.png)
+     
    5.	For Delivery stream name, enter YourInitials_firehosestream. In the Source option field, choose Kinesis stream and in the Kinesis stream drop down, select the stream created in previous section. Click Next
-   6. In the Tranform records page, choose Disabled. Note that Amazon Kinesis Firehose provides the capability through Lambda to transform the source data before loading them into the destination datasource. 
+     ![](images/firehose-002.png)
+     
+     ![](images/firehose-003.png)
+   6. In the Process records page, choose Disabled. Note that Amazon Kinesis Firehose provides the capability through Lambda to transform the source data before loading them into the destination datasource. 
+    ![](images/firehose-004.png)
    7. Click Next.
-   8. Choose Amazon S3 as the Destination. Click Create New to create a new S3 bucket with the name YourInitials-firehose-bucket in lower case, other wise you will receive an error. In the Prefix field, enter raw.  
-   9. Keep default setting by clicking next on the following 2 pages and choose **Create delivery stream**
+   8. Choose Amazon S3 as the Destination. For S3 bucket, choose the bucket that was created for you Lab 1. The bucket name should be an account ending with reinvent2018.
+   9. Keep default settings by clicking next on the following 2 pages and choose **Create delivery stream**
 
 ##  3. Create Lambda function to load data into stream
 
