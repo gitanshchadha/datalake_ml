@@ -17,6 +17,7 @@ glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
+s3_bucket = "ml-datalake-reinvent2018"
 ## @type: DataSource
 
 datesource_s3_ratings = glueContext.create_dynamic_frame.from_catalog(database = "ml-data-lake", table_name = "firehose2018", transformation_ctx = "datesource_s3_ratings")
@@ -40,14 +41,9 @@ datasource1 = datasource1.withColumn("movieid", expr("CAST(movieid AS INTEGER)")
 datasource1 = datasource1.select(["userid", "movieid", "rating", "timestamp_c"])
 datasource1 = datasource1.filter(datasource1["userid"].isNotNull())
 
-#datasource1.coalesce(1).write.csv("s3://ml-datalake-reinvent2018/ml/trainingdata/rating")
-#union_dynamicframe = DynamicFrame.fromDF(dfUnion, glueContext, "dfUnion")
-#header = datasource1.first()
-#datasource1 = datasource1.filter(row => row != header) 
-dfUnion = datasource1.union(datasource0).sort(asc("userid"),asc("movieid"))
-dfUnion.coalesce(1).write.option("header", "true").csv("s3://ml-datalake-reinvent2018/ml/trainingdata/rating")
 
-#dfUnion.coalesce(1)
+dfUnion = datasource1.union(datasource0).sort(asc("userid"),asc("movieid"))
+dfUnion.coalesce(1).write.option("header", "true").csv("s3://" + s3_bucket + "/ml/trainingdata/rating")
 
 
 #movies
@@ -58,7 +54,7 @@ datasource2 = datasource2.withColumn("title",regexp_replace("title", "\"", ""))
 datasource2 = datasource2.select(["movieid", "title", "genres"]).sort(asc("movieid"))
 datasource2 = datasource2.filter(datasource2["movieid"].isNotNull())
 
-datasource2.coalesce(1).write.option("header", "true").csv("s3://ml-datalake-reinvent2018/ml/trainingdata/movies")
+datasource2.coalesce(1).write.option("header", "true").csv("s3://" + s3_bucket + "/ml/trainingdata/movies")
 
 #links
 datasource3 = datasource_links.toDF()
@@ -67,9 +63,7 @@ datasource3 = datasource3.withColumn("tmdbid",regexp_replace("tmdbid", "\"", "")
 datasource3 = datasource3.select(["movieid", "imdbid", "tmdbid"]).sort(asc("movieid"))
 datasource3 = datasource3.filter(datasource3["movieid"].isNotNull())
 
-datasource3.coalesce(1).write.option("header", "true").csv("s3://ml-datalake-reinvent2018/ml/trainingdata/links")
+datasource3.coalesce(1).write.option("header", "true").csv("s3://" + s3_bucket + "/ml/trainingdata/links")
 
 
-#datasink2 = glueContext.write_dynamic_frame.from_options(frame = union_dynamicframe, connection_type = "s3", connection_options = {"path": "s3://gitansh-bigdata-bucket/ml/trainingdata/rating"}, format = "csv", format_options = {"writeHeader": False}, transformation_ctx = "datasink2")
 job.commit()
-

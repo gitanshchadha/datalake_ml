@@ -125,7 +125,7 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
    8. Choose Amazon S3 as the Destination. For S3 bucket, choose the bucket that was created for you Lab 1. The bucket name should be an account ending with reinvent2018.
    9. Keep default settings by clicking next on the following 2 pages and choose **Create delivery stream**
 
-##  3. Create Lambda function to load data into stream
+##  3. Create AWS Lambda function to load data into stream
 
 1. Sign into the AWS management console.
 2. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
@@ -135,7 +135,8 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 6. Click Next: Permissions.
 7. In attach permission policies page, search for Kinesis and select AmazonKinesisFullAccess and AWSLambdaKinesisExecutionRole.
 8. Click Next: Review 
-9. Enter YourInitials_kinesis_lambda for the Role Name and click Create Role.
+9. Enter **YourInitials_kinesis_lambda** for the Role Name and click Create Role.
+  ![](images/lambda-001.png)
 10. Go back to AWS Management Console https://console.aws.amazon.com/
 11. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 12. Click on Lambda from the list of all services. This will bring you to the AWS Lambda dashboard page.
@@ -147,8 +148,14 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 			-Role: Choose an existing role
 			-Exiting Role: YourInitials_kinesis_lambda
 			
+  ![](images/lambda-002.png)
+			
 15. Click Create function
 17.	In code editor, copy and paste the code under lambda folder of this project.
+18. For variable bigdataStreamName, choose the name of the stream created in Step 1.
+
+ ![](images/lambda-003.png)
+
 18. Leave everything on the page default except the Timeout value, change it from 3 seconds to 8 minutes
 19. Click Save on the top right hand corner of the screen and then click Test. Since we are not providing any parameter or input values, leave everything default, give it a name **Test**, and click Create. 
 20. The function will run 8 minutes to put rating data into the Kinesis stream. Note you may get a timeout error, this is normal as the function timed out (8 mins) before it could push all records. Continue to next step.
@@ -157,7 +164,7 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 
 # **Lab 3 - Create an AWS Glue Job**
 
-In Lab2, you used Kinesis to collect and store real time ratings data into S3. In this Lab, you will use Glue Data Catalog to define schema on the data stored in S3 and DynamoDB. You will perform ETL on the data to prepare it for the machine learning process. The output data from Glue will be used at input to the Amazon Sagemaker notebook.
+In Lab 2, you used Kinesis to collect and store real time ratings data into S3. In this Lab, you will use Glue Data Catalog to define schema on the data stored in S3 and DynamoDB. You will perform ETL on the data to prepare it for the machine learning process. The output data from Glue will be used at input to the Amazon Sagemaker notebook.
 
 ## 1. Populate the S3 Glue data catalog
 
@@ -172,6 +179,8 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 8.	In attach permission policies page, add AWSGlueServiceRole, AWSGlueSErviceNotebookRole, AmazonDynamoDBFullAccess and AmazonS3FullAccess. 
 9. Click Next:Review
 10.	Name it YourInitialsGlueServiceRole and Click Create Role
+
+ ![](images/glue-001.png)
 11.	Go back to AWS Management Console https://console.aws.amazon.com/.
 12.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 13.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
@@ -185,7 +194,7 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 22.	Choose an existing IAM role and select YourInitialsGlueServiceRole in the drop down box
 23.	Click Next
 24.	For Frequency, choose Run on demand and click Next
-25.	For Database, click Add database, name it YouInitials_bigdata, and click Create. 
+25.	For Database, click Add database, name it **ml-data-lake**, and click Create. 
 26.	Click Next
 27.	Review the configuration and click Finish.
 28.	On the Crawlers page, tick the checkbox of the crawler just created and click Run crawler.
@@ -196,6 +205,7 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 ## 2. Populate the DynamoDB Glue data catalog
 
 1.	Go back to AWS Management Console https://console.aws.amazon.com/.
+
 2.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 3.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
 4.	Click on Crawlers on the left panel and then click Add crawler 
@@ -223,6 +233,7 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 ## 3. Transform data from Glue
 
 1.	Sign into the AWS Management Console https://console.aws.amazon.com/.
+
 2.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 3.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
 4.	Click on Jobs on the left panel.
@@ -231,21 +242,81 @@ In Lab2, you used Kinesis to collect and store real time ratings data into S3. I
 7.	Close the Specify job properties dialog box with instructions by clicking the “X” button in the upper right of the dialog.
 8.	In Job properties page, enter the following
 			
-			Name: YourInitials_bigdata_analytic_csv2parquet
+			Name: YourInitials_bigdata_analytic
 			IAM role: YouInitialsGlueServiceRole
 			The job runs: A new script to be authored by you
 			ETL Language: Python
 			Script file name: YourInitials_datalake_ml
-			S3 path where the script is stored: 
-			Expand Script libraries and job parameters section and change Concurrent DPUs per job run from 10 to 100. This will help speed up the transformation process.
+			S3 path where the script is stored: Leave other fields as default.
+			Expand Script libraries and job parameters section and change Concurrent DPUs per job run from 10 to 50. This will help speed up the transformation process.
 			Leave everything else default
 
-
+ ![](images/glue-002.png)
+ 
 9.	Click Next
 10.	Skip output table selection and click Next.
-11. In the script page copy the script under folder glue of this project and paste it in the editor.
+11. In the script page copy the script under folder glue of this project and paste it in the editor. Change the variable s3_bucket to the S3 bucket created for you.
 12. Click on RunJob and take a break. This Job can take about 10-15 mins to complete when Glue launches the cluster for the first time.
-13. Once the Job is complete verify that Glue has 3 output directories for your machine learning job.
+13. Once the Job is complete verify that Glue has 3 output directories for your machine learning job. 
+
+
+# **Lab 3 - Amazon Sagemaker**
+
+At this point you should have all you files in an AWS S3 bucket ready for Data Science work. 
+The following steps will walk you through all the processes required for this part of the lab.
+
+## Step 1: Launch an Amazon SageMaker Notebook Instance
+a. Open the AWS management console, ***search*** and ***select SageMaker***.
+
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/AWS_Management_Console-2.png)
+
+b. From the SageMaker dashboard, click ***create notebook instance***
+
+![ SageMaker Console](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker.png)
+
+c. On the create notebook instance page, do the following:
+
+1. Give your notebook instance a name your will remember.
+2. Select ml.m4.16xlarge for notebook instance type.
+3. For your IAM role - select **create a new role** from the drop down menu.
+ 
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-4.png)
+
+d. Select ***any S3 bucket*** from the pop-up dialogue box and ***create role***
+
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-5.png)
+
+e.	Amazon SageMaker will create a new role for you and pre-select that role. Next ***create notebook instance***.
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-6.png)
+
+f.	If you are here, your instance is launching; thus in ***pending*** status. You should be able to access your notebook in less than 5 mins. 
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-12.png)
+
+## Step 2: Accessing your notebook instance
+a.	To access your notebook, kindly wait until your instance status is ***InService*** and click ***open***.
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-11.png)
+
+b. Your notebook landing page should be similar this below:
+
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home.png)
+
+c. Open a terminal by clicking on **New** and then **Terminal**
+
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home-3.png)
+
+d. Run the following commands in your terminal (**copy, paste and press enter**) and ensure to follow the instructions on your terminal screen.
+
+```
+wget https://s3.amazonaws.com/dallas-ai-day/SageMaker-Reco/Helper.sh
+sh Helper.sh
+```
+e. After running both commands above, your output should be similar to this:
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Mozilla_Firefox.png)
+
+f. Return to your notebook landing page by selecting your browser tab titled **Home**. Click on the **Movie _Recommender _Lab4.ipynb** notebook and proceed with the instructions in the notebook.  
+![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home-5.png)
+
+
 
 
 
