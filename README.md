@@ -142,12 +142,12 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 12. Click on Lambda from the list of all services. This will bring you to the AWS Lambda dashboard page.
 13. On the Lambda Dashboard, click Create Function
 14. Select Author from scratch and enter the following
-			
-			-Name: YourInitials_simulator
-			-Runtime: Python 3.6
-			-Role: Choose an existing role
-			-Exiting Role: YourInitials_kinesis_lambda
-			
+		```	
+			Name: YourInitials_simulator
+			Runtime: Python 3.6
+			Role: Choose an existing role
+			Exiting Role: YourInitials_kinesis_lambda
+		```	
   ![](images/lambda-002.png)
 			
 15. Click Create function
@@ -241,7 +241,7 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 6. Click Add job.
 7.	Close the Specify job properties dialog box with instructions by clicking the “X” button in the upper right of the dialog.
 8.	In Job properties page, enter the following
-			
+		```	
 			Name: YourInitials_bigdata_analytic
 			IAM role: YouInitialsGlueServiceRole
 			The job runs: A new script to be authored by you
@@ -250,7 +250,7 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 			S3 path where the script is stored: Leave other fields as default.
 			Expand Script libraries and job parameters section and change Concurrent DPUs per job run from 10 to 50. This will help speed up the transformation process.
 			Leave everything else default
-
+	```
  ![](images/glue-002.png)
  
 9.	Click Next
