@@ -1,6 +1,6 @@
 
 
-##Introduction
+# Introduction
 
 Enterprises today are exploring ways to upgrade existing applications to harvest value from **machine learning**. Business have lots of structured and unstructured data already. Machine learning is not a one time activity where you train a model and  it can live forever. There are things such as concept drift that makes the model stale. The stale model has to be minimally periodically retrained with fresh batch of data. To continue to get value out of machine learning models we need an architecture and process in place to repeatedly and consistently train new models and retrain existing models with new data.
 
@@ -20,7 +20,7 @@ The labs are **sequential** and participants will have to complete them in the s
 
 ## **Lab 1 - Use DMS to copy data from S3 to DyanamoDB**
 
-###Prerequisites and assumptions
+### Prerequisites and assumptions
 
 To complete this lab, you need an AWS account that provides access to AWS services.
 
@@ -34,7 +34,7 @@ The second way to create full DMS stack is to run the dms-full-stack-nested.yaml
 
 For this workshop we will go with second option. Run one nested CloudFormation template to create full DMS stack. Follow steps outlined below to create full DMS stack. The output of this step will be four dynamo Db tables populated with movie-lens data. You will see 5th table named <exceptions> with now records.
 
-###List of resoucres
+### List of resoucres
 
 We will provision following resources using CloudFormation templates:
 
@@ -45,7 +45,7 @@ We will provision following resources using CloudFormation templates:
 6. Lambda function to copy movie-lens data from external source into S3 bucket in the account.
 7. Lambda function to start DMS task replication.
 
-###Execution steps
+### Execution steps
 
 1. Sign into AWS console with Valid credentials
 2. Choose AWS region. Preferred region for this lab is N Virginia.
@@ -133,9 +133,9 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 1. Sign into the AWS management console.
 2. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 3. Click on Lambda from the list of all services. This will bring you to the AWS Lambda dashboard page.
-13. On the Lambda Dashboard, click Create Function
+4. On the Lambda Dashboard, click Create Function
   ![](images/lambda-001.png)
-14. Select Author from scratch and enter the following
+5. Select Author from scratch and enter the following
 
 ```
   Name: YourInitials_simulator
@@ -145,21 +145,21 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
 ```
   ![](images/lambda-002.png)
 			
-15. Click Create function
-17.	In code editor, copy and paste the code under lambda folder of this project.
-18. For variable bigdataStreamName, choose the name of the stream created in Section 1.
+6. Click Create function
+7.	In code editor, copy and paste the code under lambda folder of this project.
+8. For variable bigdataStreamName, choose the name of the stream created in Section 1.
 
  ![](images/lambda-003.png)
 
-18. Leave everything default except the Timeout value in the Basic Setting section near the bottom of the page. Change it from 3 seconds to 8 minutes
+9. Leave everything default except the Timeout value in the Basic Setting section near the bottom of the page. Change it from 3 seconds to 8 minutes
 ![](images/lambda-005.png)
 
-19. Click Save on the top right hand corner of the screen and then click Test. Since we are not providing any parameter or input values, leave everything default, give it a name **Test**, and click Create. 
+10. Click Save on the top right hand corner of the screen and then click Test. Since we are not providing any parameter or input values, leave everything default, give it a name **Test**, and click Create. 
 
 ![](images/lambda-006.png)
 
-20. The function will run 8 minutes to put rating data into the Kinesis stream. Note you may get a timeout error, this is normal as the function timed out (8 mins) before it could push all records. Continue to next step.
-21. So far, we have a Kinesis stream and we have created the Lambda function to put ratings records into the stream. We also setup Kinesis Firehose to retrieve the data in the stream and store them in a S3 bucket. To verify everything is working, go to the S3 bucket and verify the data files exist. Note Kinesis Firehose stores data in a year/month/date folder.
+11. The function will run 8 minutes to put rating data into the Kinesis stream. Note you may get a timeout error, this is normal as the function timed out (8 mins) before it could push all records. Continue to next step.
+12. So far, we have a Kinesis stream and we have created the Lambda function to put ratings records into the stream. We also setup Kinesis Firehose to retrieve the data in the stream and store them in a S3 bucket. To verify everything is working, go to the S3 bucket and verify the data files exist. Note Kinesis Firehose stores data in a year/month/date folder.
 
 ![](images/lambda-007.png)
 
@@ -175,37 +175,38 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 2.	Sign into the AWS Management Console https://console.aws.amazon.com/.
 3.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 
-13.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
-14.	Click on Crawlers on the left panel and then click Add crawler 
-15.	For Crawler name, enter youinnitials_s3_stream.
-17.	Click Next 
-18.	For Data store, ensure S3 is selected. Browse to firehose2018 prefix in the bucket that was created for you. Click Select and
+4.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
+5.	Click on Crawlers on the left panel and then click Add crawler 
+6.	For Crawler name, enter youinnitials_s3_stream.
+7.	Click Next 
+8.	For Data store, ensure S3 is selected. Browse to firehose2018 prefix in the bucket that was created for you. Click Select and
 
 ![](images/glue-001.png)
 ![](images/glue-002.png)
 
-19.	Click Next 
-20.	Choose No to Add another data store
-21.	Click Next
-22.	Choose an existing IAM role and select glue-service-role in the drop down box
+9.	Click Next 
+10.	Choose No to Add another data store
+11.	Click Next
+12.	Choose an existing IAM role and select glue-service-role in the drop down box
 ![](images/glue-003.png)
 
-23.	Click Next
-24.	For Frequency, choose Run on demand and click Next
-25.	For Database, click Add database, name it **ml-data-lake**, and click Create. 
+13.	Click Next
+14.	For Frequency, choose Run on demand and click Next
+15.	For Database, click Add database, name it **ml-data-lake**, and click Create. 
 
 ![](images/glue-004.png)
 ![](images/glue-005.png)
-26.	Click Next
-27.	Review the configuration and click Finish.
 
-28.	On the Crawlers page, tick the checkbox of the crawler just created and click Run crawler.
+16.	Click Next
+17.	Review the configuration and click Finish.
+
+18.	On the Crawlers page, tick the checkbox of the crawler just created and click Run crawler.
 
 ![](images/glue-006.png)
 
-29.	Wait for the crawler to finish.
-30.	Click Databases on the left panel and tick the checkbox next to YourInitials_bigdata database, then click View tables. 
-31. Verify that your table is created from S3 data.
+19.	Wait for the crawler to finish.
+20.	Click Databases on the left panel and tick the checkbox next to YourInitials_bigdata database, then click View tables. 
+21. Verify that your table is created from S3 data.
 
 ## 2. Populate the DynamoDB Glue data catalog
 
