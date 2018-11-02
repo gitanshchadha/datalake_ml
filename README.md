@@ -48,14 +48,16 @@ We will provision following resources using CloudFormation templates:
 ###Execution steps
 
 1. Sign into AWS console with Valid credentials
-2. Choose AWS regions
-3. Navigate to DMS service console. 
+2. Choose AWS region. Preferred region for this lab is N Virginia.
+3. Navigate to Cloudformation service console. 
 ![DMS Service Console](./images/dms-001.png) 
 4. Click 'Create Stack'. 
 ![DMS Service Console](./images/dms-002.png) 
-5. Specify an Amazon S3 template URL and click 'Next'. 
+5. Specify an Amazon S3 template URL, paste the following URL
+https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml
+and click 'Next'. 
 ![DMS Service Console](./images/dms-003.png) 
-6. Specify stack name and click 'Next'. 
+6. Specify MLDataLakeLab as StackName and click 'Next'. 
 ![DMS Service Console](./images/dms-004.png)
 7. Click 'Next'. 
 ![DMS Service Console](./images/dms-005.png)
@@ -103,9 +105,9 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
    3. Click on kinesis from the list of services. You will arrive on the kinesis dashboard.
    4. On the Kinesis Dashboard, click **Data Stream** on the left panel and then click **Create** **Kinesis Stream**. If you do not see the panel but a welcome page, go ahead and click “**Get Started**”.
     ![](images/kinesis-001.png)
-   5. For Kinesis stream name, enter YourInitials_stream. Enter 1 for Number of Shards. 	 ![](images/kinesis-002.png)
-   6. Click on create Kinesis stream. The stream will be on creating status. Wait for stream to be in **ACTIVE** status.
+   5. For Kinesis stream name, enter YourInitials_stream. Enter 1 for Number of Shards. Click on create Kinesis stream. The stream will be on creating status. Wait for stream to be in **ACTIVE** status.
     ![](images/kinesis-002.png)
+
 
 ## 2. Create an Amazon Kinesis Firehose stream
 
@@ -118,49 +120,48 @@ In this Lab, we will setup setup a Lambda function to push user rating data into
    5.	For Delivery stream name, enter YourInitials_firehosestream. In the Source option field, choose Kinesis stream and in the Kinesis stream drop down, select the stream created in previous section. Click Next
      ![](images/firehose-002.png)
      
-     ![](images/firehose-003.png)
    6. In the Process records page, choose Disabled. Note that Amazon Kinesis Firehose provides the capability through Lambda to transform the source data before loading them into the destination datasource. 
     ![](images/firehose-004.png)
    7. Click Next.
-   8. Choose Amazon S3 as the Destination. For S3 bucket, choose the bucket that was created for you Lab 1. The bucket name should be a number (aws account #) ending with reinvent2018.
-   9. Keep default settings by clicking next on the following 2 pages and choose **Create delivery stream**
+   8. Choose Amazon S3 as the Destination. For S3 bucket, choose the bucket that was created for you Lab 1. The bucket name should be a number (aws account #) ending with reinvent-2018-data. Specify **firehose** as the prefix and click next.
+    ![](images/firehose-006.png)
+   9. On **Configure Settings** select to create a new IAM and click on **Allow**. Click Next and choose **Create delivery stream**
+    ![](images/firehose-007.png)
 
 ##  3. Create AWS Lambda function to load data into stream
 
 1. Sign into the AWS management console.
 2. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
-3. Click on IAM from the list of all services. This will bring you to the IAM dashboard page.
-4. Click Roles on the left hand panel and then click Create role.
-5. Select **Lambda**
-6. Click Next: Permissions.
-7. In attach permission policies page, search for Kinesis and select AmazonKinesisFullAccess and AWSLambdaKinesisExecutionRole.
-8. Click Next: Review 
-9. Enter **YourInitials_kinesis_lambda** for the Role Name and click Create Role.
-  ![](images/lambda-001.png)
-10. Go back to AWS Management Console https://console.aws.amazon.com/
-11. In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
-12. Click on Lambda from the list of all services. This will bring you to the AWS Lambda dashboard page.
+3. Click on Lambda from the list of all services. This will bring you to the AWS Lambda dashboard page.
 13. On the Lambda Dashboard, click Create Function
+  ![](images/lambda-001.png)
 14. Select Author from scratch and enter the following
 
 ```
   Name: YourInitials_simulator
   Runtime: Python 3.6
   Role: Choose an existing role
-  Exiting Role: YourInitials_kinesis_lambda
+  Exiting Role: lambda-kinesis-role
 ```
   ![](images/lambda-002.png)
 			
 15. Click Create function
 17.	In code editor, copy and paste the code under lambda folder of this project.
-18. For variable bigdataStreamName, choose the name of the stream created in Step 1.
+18. For variable bigdataStreamName, choose the name of the stream created in Section 1.
 
  ![](images/lambda-003.png)
 
-18. Leave everything on the page default except the Timeout value, change it from 3 seconds to 8 minutes
+18. Leave everything default except the Timeout value in the Basic Setting section near the bottom of the page. Change it from 3 seconds to 8 minutes
+![](images/lambda-005.png)
+
 19. Click Save on the top right hand corner of the screen and then click Test. Since we are not providing any parameter or input values, leave everything default, give it a name **Test**, and click Create. 
+
+![](images/lambda-006.png)
+
 20. The function will run 8 minutes to put rating data into the Kinesis stream. Note you may get a timeout error, this is normal as the function timed out (8 mins) before it could push all records. Continue to next step.
 21. So far, we have a Kinesis stream and we have created the Lambda function to put ratings records into the stream. We also setup Kinesis Firehose to retrieve the data in the stream and store them in a S3 bucket. To verify everything is working, go to the S3 bucket and verify the data files exist. Note Kinesis Firehose stores data in a year/month/date folder.
+
+![](images/lambda-007.png)
 
 
 # **Lab 3 - Create an AWS Glue Job**
@@ -173,32 +174,35 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 
 2.	Sign into the AWS Management Console https://console.aws.amazon.com/.
 3.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
-4.	Click on IAM from the list of all services. This will bring you to the IAM dashboard page.
-5.	Click Roles on the left hand panel and then click Create role.
-6. Select Glue
-7. Click Next: Permissions
-8.	In attach permission policies page, add AWSGlueServiceRole, AWSGlueSErviceNotebookRole, AmazonDynamoDBFullAccess and AmazonS3FullAccess. 
-9. Click Next:Review
-10.	Name it YourInitialsGlueServiceRole and Click Create Role
 
- ![](images/glue-001.png)
-11.	Go back to AWS Management Console https://console.aws.amazon.com/.
-12.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 13.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
 14.	Click on Crawlers on the left panel and then click Add crawler 
-15.	For Crawler name, enter YourInitials_S3_stream.
+15.	For Crawler name, enter youinnitials_s3_stream.
 17.	Click Next 
-18.	For Data store, ensure S3 is selected. Choose Specified path in my account and for Include path, enter s3://YourInitials-firehose-bucket/
+18.	For Data store, ensure S3 is selected. Browse to firehose2018 prefix in the bucket that was created for you. Click Select and
+
+![](images/glue-001.png)
+![](images/glue-002.png)
+
 19.	Click Next 
 20.	Choose No to Add another data store
 21.	Click Next
-22.	Choose an existing IAM role and select YourInitialsGlueServiceRole in the drop down box
+22.	Choose an existing IAM role and select glue-service-role in the drop down box
+![](images/glue-003.png)
+
 23.	Click Next
 24.	For Frequency, choose Run on demand and click Next
 25.	For Database, click Add database, name it **ml-data-lake**, and click Create. 
+
+![](images/glue-004.png)
+![](images/glue-005.png)
 26.	Click Next
 27.	Review the configuration and click Finish.
+
 28.	On the Crawlers page, tick the checkbox of the crawler just created and click Run crawler.
+
+![](images/glue-006.png)
+
 29.	Wait for the crawler to finish.
 30.	Click Databases on the left panel and tick the checkbox next to YourInitials_bigdata database, then click View tables. 
 31. Verify that your table is created from S3 data.
@@ -210,26 +214,40 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 2.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 3.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
 4.	Click on Crawlers on the left panel and then click Add crawler 
-5.	For Crawler name, enter YourInitials_Dynamodb_stream.
+5.	For Crawler name, enter gc_dynamodb_stream.
 7.	Click Next 
 8.	For Data store, ensure DynamoDB is selected. Choose movies_t table and click next.
+
+![](images/glue-007.png)
+![](images/glue-008.png)
+
 9.	Click Next 
 10. Choose Yes to Add another data store
 11. For Data store, ensure DynamoDB is selected. Choose links_t table and click next.
 12.	Choose Yes to Add another data store
-13. For Data store, ensure DynamoDB is selected. Choose ratings_t table and click next.
+13. For Data store, ensure DynamoDB is selected. Choose ratings_t table and click next. You have now selected the 3 DynamoDB tables created in Lab1.
+![](images/glue-009.png)
+
 14.	Click Next
 15. Choose No to Add another data store
-16.	Choose an existing IAM role and select YourInitialsGlueServiceRole in the drop down box
+16.	Choose an existing IAM role and select glue-service-role in the drop down box.
+
+![](images/glue-010.png)
+
 17.	Click Next
 18.	For Frequency, choose Run on demand and click Next
-19.	For Database, click choose existing database created in above session YouInitials_bigdata, and click Create. 
+19.	For Database, click choose existing database created in above session ml-data-lake, and click Create. 
+
+![](images/glue-010.png)
+
 20.	Click Next
 21.	Review the configuration and click Finish.
 22.	On the Crawlers page, tick the checkbox of the crawler just created and click Run crawler.
 22.	Wait for the crawler to finish.
-23.	Click Databases on the left panel and tick the checkbox next to YourInitials_bigdata database, then click View tables. 
+23.	Click Databases on the left panel and tick the checkbox next to ml-data-lake database, then click View tables. 
 24. Verify that 3 tables are created which store information about data in DynamoDB.
+
+![](images/glue-012.png)
 
 ## 3. Transform data from Glue
 
@@ -238,28 +256,30 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 2.	In the upper-right corner of the AWS Management Console, confirm you are in the desired AWS region (e.g., N. Virginia).
 3.	Click on Glue from the list of all services. This will bring you to the AWS Glue dashboard page.
 4.	Click on Jobs on the left panel.
-5.	Close the Add a job dialog box with instructions by clicking the “X” button in the upper right of the dialog.
-6. Click Add job.
-7.	Close the Specify job properties dialog box with instructions by clicking the “X” button in the upper right of the dialog.
-8.	In Job properties page, enter the following
+5. Click Add job.
+6.	In Job properties page, enter the following
 
 ```
-			Name: YourInitials_bigdata_analytic
-			IAM role: YouInitialsGlueServiceRole
+			Name: yourinnitials_ml_datalake
+			IAM role: glue-service-role
 			The job runs: A new script to be authored by you
-			ETL Language: Python
-			Script file name: YourInitials_datalake_ml
-			S3 path where the script is stored: Leave other fields as default.
 			Expand Script libraries and job parameters section and change Concurrent DPUs per job run from 10 to 50. This will help speed up the transformation process.
 			Leave everything else default
 ```
  
- ![](images/glue-002.png)
+ ![](images/glue-013.png)
+ ![](images/glue-014.png)
  
 9.	Click Next
-10.	Skip output table selection and click Next.
+10.	Skip output table selection and click Next. Click on Save Job and Edit Script.
+
+ ![](images/glue-015.png)
+ 
 11. In the script page copy the script under folder glue of this project and paste it in the editor. Change the variable s3_bucket to the S3 bucket created for you.
-12. Click on RunJob and take a break. This Job can take about 10-15 mins to complete when Glue launches the cluster for the first time.
+
+ ![](images/glue-015.png)
+ 
+12. Click on RunJob and move to setup of the next Lab. This Job can take about 10-15 mins to complete when Glue launches the cluster for the first time.
 13. Once the Job is complete verify that Glue has 3 output directories for your machine learning job. 
 
 
