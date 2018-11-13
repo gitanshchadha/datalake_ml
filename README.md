@@ -53,9 +53,9 @@ We will provision following resources using CloudFormation templates:
 ![DMS Service Console](./images/dms-001.png) 
 4. Click 'Create Stack'. 
 ![DMS Service Console](./images/dms-002.png) 
-5. Specify an Amazon S3 template URL, paste the following URL
-https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml
-and click 'Next'. 
+5. Click this button to launch stack and then click 'Next':
+
+<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=dms&templateURL=https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml"><span><img height="18px" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></span></a> 
 ![DMS Service Console](./images/dms-003.png) 
 6. Specify MLDataLakeLab as StackName and click 'Next'. 
 ![DMS Service Console](./images/dms-004.png)
@@ -339,6 +339,22 @@ e. After running both commands above, your output should be similar to this:
 
 f. Return to your notebook landing page by selecting your browser tab titled **Home**. Click on the **Movie _Recommender _Lab4.ipynb** notebook and proceed with the instructions in the notebook.  
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home-5.png)
+
+## Cleanup Resources
+1. Navigate to DynamoDb Console 
+![DynamoDb Console](./images/del-dynamo-001.png) 
+2. Delete all tables created in Lab 1 one-by-one. 
+![DynamoDb Console](./images/del-dynamo-002.png) 
+3. Navigate to S3 Console. 
+![S3 Console](./images/del-s3-001.png) 
+4. Find Bucket created in Lab 1 and Click to list objects in the bucket.
+![S3 Console](./images/del-s3-002.png) 
+5. Delete all object listed in bucket one-by-one.
+![S3 Console](./images/del-s3-003.png) 
+6. Navigate to CloudFormation Console. 
+![CloudFormation Console](./images/del-cfn-001.png) 
+7. Check the 'dms'stack created in Lab 1 and perform delete operation.
+![CloudFormation Console](./images/del-cfn-002.png)
 
 
 
