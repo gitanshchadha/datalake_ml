@@ -56,10 +56,10 @@ We will provision following resources using CloudFormation templates:
 5. Click the 'Launch Stack' button(either Oregon or N. Virginia) to launch stack and then click 'Next':
    
 Launch in the Oregon Region    
-<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=dms&templateURL=https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml"><span><img height="18px" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></span></a>  
+<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=MLDataLakeLab&templateURL=https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml"><span><img height="18px" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></span></a>  
 **OR**         
 Launch in the N. Virgina Region    
-<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=dms&templateURL=https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml"><span><img height="18px" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></span></a>         
+<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=MLDataLakeLab&templateURL=https://s3-us-west-2.amazonaws.com/prc-reinvent-2018/cfn-scripts/dms-full-stack-nested.yaml"><span><img height="18px" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/></span></a>         
       
 ![DMS Service Console](./images/dms-003.png) 
 6. Specify MLDataLakeLab as StackName and click 'Next'. 
