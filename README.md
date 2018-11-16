@@ -289,7 +289,7 @@ In Lab 2, you used Kinesis to collect and store real time ratings data into S3. 
 13. Once the Job is complete verify that Glue has 3 output directories for your machine learning job. 
 
 
-# **Lab 3 - Amazon Sagemaker**
+# **Lab 4 - Amazon Sagemaker**
 
 At this point you should have all you files in an AWS S3 bucket ready for Data Science work. 
 The following steps will walk you through all the processes required for this part of the lab.
@@ -311,39 +311,42 @@ c. On the create notebook instance page, do the following:
  
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-4.png)
 
-d. Select ***any S3 bucket*** from the pop-up dialogue box and ***create role***
+4. Select ***any S3 bucket*** from the pop-up dialogue box and ***create role***
 
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-5.png)
 
-e.	Amazon SageMaker will create a new role for you and pre-select that role. Next ***create notebook instance***.
+5.	Amazon SageMaker will create a new role for you and pre-select that role. Next ***create notebook instance***.
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-6.png)
 
-f.	If you are here, your instance is launching; thus in ***pending*** status. You should be able to access your notebook in less than 5 mins. 
+6.	If you are here, your instance is launching; thus in ***pending*** status. You should be able to access your notebook in less than 5 mins. 
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-12.png)
 
 ## Step 2: Accessing your notebook instance
-a.	To access your notebook, kindly wait until your instance status is ***InService*** and click ***open***.
+1.	To access your notebook, kindly wait until your instance status is ***InService*** and click ***open***.
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Amazon_SageMaker-11.png)
 
-b. Your notebook landing page should be similar this below:
+2. Your notebook landing page should be similar this below:
 
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home.png)
 
-c. Open a terminal by clicking on **New** and then **Terminal**
+3. Open a terminal by clicking on **New** and then **Terminal**
 
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home-3.png)
 
-d. Run the following commands in your terminal (**copy, paste and press enter**) and ensure to follow the instructions on your terminal screen.
+4. Run the following commands in your terminal (**copy, paste and press enter**) and ensure to follow the instructions on your terminal screen.
 
 ```
 wget https://s3.amazonaws.com/dallas-ai-day/SageMaker-Reco/Helper.sh
 sh Helper.sh
 ```
-e. After running both commands above, your output should be similar to this:
+
+5. After running both commands above, your output should be similar to this:
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Mozilla_Firefox.png)
 
-f. Return to your notebook landing page by selecting your browser tab titled **Home**. Click on the **Movie _Recommender _Lab4.ipynb** notebook and proceed with the instructions in the notebook.  
+6. Return to your notebook landing page by selecting your browser tab titled **Home**. Click on the **Movie _Recommender _Lab4.ipynb** notebook and proceed with the instructions in the notebook.  
 ![Console Screenshot](https://s3.amazonaws.com/recommendation-48/MacDown/Home-5.png)
+
+7. **Congratulations!** you have finished all the labs. Please make sure to delete all resources as part of this lab.
 
 ## Cleanup Resources
 1. Navigate to DynamoDb Console 
@@ -360,6 +363,18 @@ f. Return to your notebook landing page by selecting your browser tab titled **H
 ![CloudFormation Console](./images/del-cfn-001.png) 
 7. Check the 'dms'stack created in Lab 1 and perform delete operation.
 ![CloudFormation Console](./images/del-cfn-002.png)
+8. Delete Kinesis Data Stream and Firehose stream.
+![Kinesis Console](./images/kinesis-delete.png)
+![Firehose Console](./images/firehose-delete.png)
+9. Delete AWS Lambda function.  
+![Lambda Console](./images/lambda-delete.png)
+9. Delete AWS Glue crawler and job. 
+![Glue Console](./images/glue-crawler-delete.png)
+![Glue Console](./images/glue-job-delete.png)
+10. Go to Amazon Sagemaker console and stop the notebook instance and delete it under actions.
+![Glue Console](./images/sagemaker-delete.png)
+ 
+
 
 
 
