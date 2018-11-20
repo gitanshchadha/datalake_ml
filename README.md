@@ -32,7 +32,7 @@ You can choose to run CloudFormation templates one by one manully in sequence. I
 
 The second way to create full DMS stack is to run the dms-full-stack-nested.yaml file that will automatically run the five CloudFormation templates i.e <filename>-001.yaml - <filename>-005.yaml sequentially without manual intervention.
 
-For this workshop we will go with second option. Run one nested CloudFormation template to create full DMS stack. Follow steps outlined below to create full DMS stack. The output of this step will be four dynamo Db tables populated with movie-lens data. You will see 5th table named <exceptions> with now records.
+For this workshop we will go with second option. Run one nested CloudFormation template to create full DMS stack. Follow steps outlined below to create full DMS stack. The output of this step will be four dynamo Db tables populated with movie-lens data. You will see 5th table named 'exceptions' with zero records.
 
 ### List of resoucres
 
@@ -40,7 +40,7 @@ We will provision following resources using CloudFormation templates:
 
 1. Amazon S3 bucket to hold movielens data.
 2. IAM roles to provide access to Database Migration Service to access and provision other AWS resources
-4. VPC, Subnet, Internet Gateway and Security Group to provisio DMS Replication Instances.
+4. VPC, Subnet, Internet Gateway and Security Group to provision DMS Replication Instances.
 5. DMS replication instance and DMS tasks
 6. Lambda function to copy movie-lens data from external source into S3 bucket in the account.
 7. Lambda function to start DMS task replication.
@@ -70,7 +70,7 @@ Launch in the N. Virgina Region
 ![DMS Service Console](./images/dms-006.png)
 9. Wait for Cloudformation to provision all your resources. It will take around 15 minutes for complete execution.
 
-###Validation steps
+### Validation steps
 1. Validate in CloudFormation console that DMS stack has been created successfully. 
 ![DMS Service Console](./images/dms-007.png) 
 2. Click Services, search DMS and Click on Database Migration Service 
